@@ -1,8 +1,11 @@
+[![PHP Version](https://img.shields.io/badge/php-7.4%2B-blue.svg)](https://packagist.org/packages/dvelum/dr)
+[![Total Downloads](https://img.shields.io/packagist/dt/dvelum/dr.svg?style=flat-square)](https://packagist.org/packages/dvelum/dr)
+![Build and Test](https://github.com/dvelum/dvr/workflows/Build%20and%20Test/badge.svg?branch=develop&event=push)
 # Data Record. Инструмент для создания и валидации структур данных.
 
 Позволяет создавать и валидировать структуры данных до отправки в хранилище. Без привязки к БД. 
 
-Можно использовать как DTO, при этом не создавая лишних классво заполненных методами геттерами и сеттерами.
+Можно использовать как DTO, при этом не создавая лишних классов заполненных полями, геттерами и сеттерами.
 Можно использовать замену валидатора Active Record или ORM в проектах где они не используются.
 
 Конечную структуру можно экспортировать в массив, далее сохранить в БД.
