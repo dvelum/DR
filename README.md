@@ -1,6 +1,6 @@
 [![PHP Version](https://img.shields.io/badge/php-7.4%2B-blue.svg)](https://packagist.org/packages/dvelum/dr)
 [![Total Downloads](https://img.shields.io/packagist/dt/dvelum/dr.svg?style=flat-square)](https://packagist.org/packages/dvelum/dr)
-![Build and Test](https://github.com/dvelum/dvr/workflows/Build%20and%20Test/badge.svg?branch=develop&event=push)
+[![Build and Test](https://github.com/dvelum/dr/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/dvelum/dr/actions/workflows/build_and_test.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/530ae53699f3416d8565282e10bac6ec)](https://www.codacy.com/gh/dvelum/dr/dashboard)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/530ae53699f3416d8565282e10bac6ec)](https://www.codacy.com/gh/dvelum/dr/dashboard)
 # Data Record. Инструмент для создания и валидации структур данных.
