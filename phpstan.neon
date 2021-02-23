@@ -1,0 +1,6 @@
+parameters:
+	scanDirectories:
+	    -  %currentWorkingDirectory%/src
+	autoload_files: []
+	level: max
+
