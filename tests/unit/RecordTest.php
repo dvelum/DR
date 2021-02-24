@@ -302,4 +302,23 @@ class RecordTest extends TestCase
         $record->set('int_field', 11);
         $this->assertTrue(!empty($record->getUpdates()));
     }
+
+    public function testDateType()
+    {
+        $record = $this->createRecord();
+        $record->set('date', '2021-01-01');
+        $this->assertInstanceOf(\DateTime::class, $record->get('date'));
+        $this->assertEquals('2021-01-01', $record->get('date')->format('Y-m-d'));
+    }
+
+    public function testBoolType()
+    {
+        $record = $this->createRecord();
+        $record->set('bool_field', '1');
+        $this->assertTrue(is_bool($record->get('bool_field')));
+        $this->assertEquals(true, $record->get('bool_field'));
+        $record->set('bool_field', '0');
+        $this->assertTrue(is_bool($record->get('bool_field')));
+        $this->assertEquals(false, $record->get('bool_field'));
+    }
 }
