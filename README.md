@@ -76,9 +76,8 @@ return [
 return [
 	// в значении - callable (может быть ваш класс), возвращает массив конфигурации, 
 	// используется ленивая загрузка
-    'ClientData' => function(){ return include 'client.php'}
+    'ClientData' => function(){ return include 'client.php';}
 ];
-
 ```
 
 Использование: 
@@ -92,6 +91,7 @@ $params = $psr7Request->getParsedBody();
 
 // получаем настройки структур
 $registry = include 'registry.php'
+// создаем фабрику DR
 $factory = new Factory($registry /*,[реестр экспортов], [реестр кастомных типов]*/);
 
 //=== Пример 1 ================================
@@ -120,11 +120,12 @@ $id = $psr7Request->getQueryParams()['id'];
 $clientData = $someStorage->load($id);
 $record = $factory->create('ClientData');
 // помещаем данные из хранилища в структуру
-$record->setData(clientData);
+$record->setData($clientData);
 // помечаем изменения как принятые
-$record->commitChabges();
+$record->commitChanges();
 
 try{
+ // сетим данные из запроса
   $record->setData($params);
 }catch(\InvalidArgumentException $e){
   // переданы невалидные данные
