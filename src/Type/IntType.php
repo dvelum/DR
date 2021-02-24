@@ -51,7 +51,7 @@ final class IntType implements TypeInterface
      */
     public function applyType(array $fieldConfig, $value)
     {
-        return $value = (int)$value;
+        return (int)$value;
     }
 
     /**

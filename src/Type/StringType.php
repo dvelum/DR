@@ -57,7 +57,7 @@ final class StringType implements TypeInterface
      */
     public function applyType(array $fieldConfig, $value)
     {
-        return $value = (string)$value;
+        return  (string) $value;
     }
 
     /**

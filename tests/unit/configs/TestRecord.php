@@ -46,6 +46,10 @@ return [
             'minValue'=>1,
             'maxValue' =>10
         ],
+        'enum'=>[
+            'type' => 'enum',
+            'values' => [1, 'first', 'second' ,'last', 15, 2.5]
+        ],
         'json_field' => [
             'type' => 'json'
         ],

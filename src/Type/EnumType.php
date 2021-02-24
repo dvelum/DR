@@ -29,18 +29,14 @@ declare(strict_types=1);
 
 namespace Dvelum\DR\Type;
 
-final class FloatType implements TypeInterface
+final class EnumType implements TypeInterface
 {
     /**
      * @inheritDoc
      */
     public function validateValue(array $fieldConfig, $value): bool
     {
-        if (isset($fieldConfig['minValue']) && $value < $fieldConfig['minValue']) {
-            return false;
-        }
-
-        if (isset($fieldConfig['maxValue']) && $value > $fieldConfig['maxValue']) {
+        if(!isset($fieldConfig['values'][$value])){
             return false;
         }
         return true;
@@ -51,7 +47,7 @@ final class FloatType implements TypeInterface
      */
     public function applyType(array $fieldConfig, $value)
     {
-        return  (float) $value;
+        return (string) $value;
     }
 
     /**
@@ -59,10 +55,11 @@ final class FloatType implements TypeInterface
      */
     public function validateType(array $fieldConfig, $value): bool
     {
-        if (!is_numeric($value)) {
+        if (!is_numeric($value) && !is_string($value)) {
             return false;
         }
         return true;
     }
 }
+
 

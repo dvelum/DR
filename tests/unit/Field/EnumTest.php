@@ -1,5 +1,4 @@
 <?php
-
 /*
  * DVelum DR library https://github.com/dvelum/dr
  *
@@ -25,44 +24,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-declare(strict_types=1);
 
-namespace Dvelum\DR\Type;
+namespace Dvelum\DR\UnitTest\Field;
 
-final class FloatType implements TypeInterface
+use Dvelum\DR\Record;
+use Dvelum\DR\UnitTest\RecordFactory;
+use PHPUnit\Framework\TestCase;
+
+class EnumTest extends TestCase
 {
-    /**
-     * @inheritDoc
-     */
-    public function validateValue(array $fieldConfig, $value): bool
-    {
-        if (isset($fieldConfig['minValue']) && $value < $fieldConfig['minValue']) {
-            return false;
-        }
 
-        if (isset($fieldConfig['maxValue']) && $value > $fieldConfig['maxValue']) {
-            return false;
-        }
-        return true;
+    private function createRecord(): Record
+    {
+        return (new RecordFactory())->getFactory()->create('TestRecord');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function applyType(array $fieldConfig, $value)
+    public function testIntValue()
     {
-        return  (float) $value;
+        $record = $this->createRecord();
+        $record->set('enum', 15);
+        $this->assertEquals('15', $record->get('enum'));
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function validateType(array $fieldConfig, $value): bool
+    public function testStringValue()
     {
-        if (!is_numeric($value)) {
-            return false;
-        }
-        return true;
+        $record = $this->createRecord();
+        $record->set('enum', '15');
+        $this->assertEquals('15', $record->get('enum'));
+    }
+
+    public function testFloatValue()
+    {
+        $record = $this->createRecord();
+        $record->set('enum', '2.5');
+        $this->assertEquals('2.5', $record->get('enum'));
+    }
+    public function testFloa2tValue()
+    {
+        $record = $this->createRecord();
+        $record->set('enum', 2.5);
+        $this->assertEquals('2.5', $record->get('enum'));
+    }
+
+    public function testInvalidValue()
+    {
+        $record = $this->createRecord();
+        $this->expectException(\InvalidArgumentException::class);
+        $record->set('enum', 2.54);
     }
 }
+
 

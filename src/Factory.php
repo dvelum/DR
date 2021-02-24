@@ -30,6 +30,7 @@ declare(strict_types=1);
 namespace Dvelum\DR;
 
 use Dvelum\DR\Export\ExportInterface;
+use Dvelum\DR\Type\EnumType;
 use Dvelum\DR\Type\RecordType;
 use Dvelum\DR\Type\TypeInterface;
 use InvalidArgumentException;
@@ -216,6 +217,10 @@ class Factory
             // inject validator
             if (isset($fieldConfig['validator'])) {
                 $fieldConfig['validator'] = $this->getValidator($fieldConfig['validator']);
+            }
+
+            if($fieldConfig['type'] instanceof EnumType){
+                $fieldConfig['values'] = array_flip(array_map('strval', $fieldConfig['values']));
             }
 
             // register default factory for RecordType
