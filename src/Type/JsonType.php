@@ -36,7 +36,7 @@ final class JsonType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function applyType($value)
+    public function applyType(array $fieldConfig, $value)
     {
         if (is_string($value)) {
             try {
@@ -66,7 +66,7 @@ final class JsonType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function validateType($value): bool
+    public function validateType(array $fieldConfig, $value): bool
     {
         if (!is_string($value) && !is_array($value)) {
             return false;

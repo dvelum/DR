@@ -33,6 +33,7 @@ use Dvelum\DR\Type\DateType;
 use Dvelum\DR\Type\FloatType;
 use Dvelum\DR\Type\IntType;
 use Dvelum\DR\Type\JsonType;
+use Dvelum\DR\Type\RecordType;
 use Dvelum\DR\Type\StringType;
 
 
@@ -45,6 +46,7 @@ class DataType
     public const DATETIME_TYPE =DateTimeType::class;
     public const BOOL_TYPE =BoolType::class;
     public const JSON_TYPE =  JsonType::class;
+    public const RECORD_TYPE = RecordType::class;
 
     public const ALIASES = [
         'string' => self::STRING_TYPE,
@@ -53,6 +55,7 @@ class DataType
         'date' => self::DATE_TYPE,
         'datetime' => self::DATETIME_TYPE,
         'bool' => self::BOOL_TYPE,
-        'json' => self::JSON_TYPE
+        'json' => self::JSON_TYPE,
+        'record' => self::RECORD_TYPE
     ];
 }

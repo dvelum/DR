@@ -1,5 +1,4 @@
 <?php
-
 /*
  * DVelum DR library https://github.com/dvelum/dr
  *
@@ -29,29 +28,27 @@ declare(strict_types=1);
 
 namespace Dvelum\DR\Type;
 
-final class FloatType implements TypeInterface
+use Dvelum\DR\Factory;
+use Dvelum\DR\Record;
+
+final class RecordType implements TypeInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function validateValue(array $fieldConfig, $value): bool
-    {
-        if (isset($fieldConfig['minValue']) && $value < $fieldConfig['minValue']) {
-            return false;
-        }
-
-        if (isset($fieldConfig['maxValue']) && $value > $fieldConfig['maxValue']) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * @inheritDoc
      */
     public function applyType(array $fieldConfig, $value)
     {
-        return $value = (float)$value;
+        if(is_array($value)){
+            /**
+             * @var Factory $factory
+             */
+            $factory = $fieldConfig['factory'];
+            $record = $factory->create($fieldConfig['recordName']);
+            $record->setData($value);
+            return $record;
+        }
+
+       return $value;
     }
 
     /**
@@ -59,10 +56,28 @@ final class FloatType implements TypeInterface
      */
     public function validateType(array $fieldConfig, $value): bool
     {
-        if (!is_numeric($value)) {
+        if(is_array($value)){
+            return true;
+        }
+
+        if(!$value instanceof Record){
             return false;
         }
-        return true;
+
+         if($value->getName() === $fieldConfig['recordName']){
+             return true;
+         }
+
+        return false;
+    }
+    /**
+     * @inheritDoc
+     */
+    public function validateValue(array $fieldConfig, $value): bool
+    {
+        /**
+         * @var Record $value
+         */
+       return $value->validateRequired()->isSuccess();
     }
 }
-

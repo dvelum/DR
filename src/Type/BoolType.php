@@ -33,7 +33,7 @@ final class BoolType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function applyType($value)
+    public function applyType(array $fieldConfig, $value)
     {
         return (bool) $value;
     }
@@ -41,11 +41,13 @@ final class BoolType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function validateType($value): bool
+    public function validateType(array $fieldConfig, $value): bool
     {
         return true;
     }
-
+    /**
+     * @inheritDoc
+     */
     public function validateValue(array $fieldConfig, $value): bool
     {
         return true;

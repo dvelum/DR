@@ -1,5 +1,8 @@
-# Data Record  Документация
+# Документация по DVelum Data Record
 
-[Настройки полей](data_record_fields.md)
+## Установка
+`composer create-project dvelum/dr`
 
-[Регистрация собственного типа данных](custom_type.md)
+* [Настройки полей](data_record_fields.md)
+* [Использование вложенных Data Record](record_type.md)
+* [Регистрация собственного типа данных](custom_type.md)

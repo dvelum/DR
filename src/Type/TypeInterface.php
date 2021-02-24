@@ -35,17 +35,19 @@ interface TypeInterface
 {
     /**
      * Check if value can be converted into field type
+      * @param array<string,mixed> $fieldConfig
      * @param mixed $value
      * @return bool
      */
-    public function validateType($value): bool;
+    public function validateType(array $fieldConfig, $value): bool;
     /**
      *  Convert input value into field type
+     * @param array<string,mixed> $fieldConfig
      * @param mixed $value
      * @return mixed
      * @throws InvalidArgumentException
      */
-    public function applyType($value);
+    public function applyType(array $fieldConfig, $value);
 
     /**
      *  Validate field value, using field configuration. For example check maxLength, minVal etc.

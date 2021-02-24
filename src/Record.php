@@ -101,14 +101,14 @@ class Record
         }
 
         // validate not nul values type (any field can be null)
-        if ($value!==null && !$type->validateType($value)) {
+        if ($value!==null && !$type->validateType($field->getData(), $value)) {
             throw new InvalidArgumentException('Invalid data type for  field: ' . $fieldName);
         }
 
         // covert value type into required by configuration
         if($value!==null){
             try{
-                $value = $type->applyType($value);
+                $value = $type->applyType($field->getData(), $value);
             }catch (\Throwable $e){
                 throw new InvalidArgumentException('Invalid value for field '.$fieldName.' '.$e->getMessage());
             }

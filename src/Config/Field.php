@@ -54,6 +54,15 @@ class Field
     }
 
     /**
+     * Get field configuration
+     * @return array<string,mixed>
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @return TypeInterface
      */
     public function getType(): TypeInterface
@@ -127,7 +136,7 @@ class Field
              * @var Object $validator
              */
             $validator = $this->data['validator'];
-            if(method_exists($validator,'validate')){
+            if (method_exists($validator, 'validate')) {
                 if (!$validator->validate($value)) {
                     return false;
                 }

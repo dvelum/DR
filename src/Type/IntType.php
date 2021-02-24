@@ -1,4 +1,5 @@
 <?php
+
 /*
  * DVelum DR library https://github.com/dvelum/dr
  *
@@ -48,7 +49,7 @@ final class IntType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function applyType($value)
+    public function applyType(array $fieldConfig, $value)
     {
         return $value = (int)$value;
     }
@@ -56,7 +57,7 @@ final class IntType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function validateType($value): bool
+    public function validateType(array $fieldConfig, $value): bool
     {
         if (!is_numeric($value)) {
             return false;

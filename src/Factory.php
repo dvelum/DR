@@ -30,6 +30,7 @@ declare(strict_types=1);
 namespace Dvelum\DR;
 
 use Dvelum\DR\Export\ExportInterface;
+use Dvelum\DR\Type\RecordType;
 use Dvelum\DR\Type\TypeInterface;
 use InvalidArgumentException;
 use RuntimeException;
@@ -46,31 +47,51 @@ class Factory
      */
     protected array $registeredTypes;
     /**
-     * @var array <string, string|ExportInterface>
+     * @var array<string, string|ExportInterface>
      */
     protected array $registeredExports;
     /**
-     * @var array <string, string|Object>
+     * @var array<string, string|Object>
      */
     protected array $registeredValidators;
+    /**
+     * @var array<string,string|object>
+     */
+    protected array $registeredFactories;
+    /**
+     * @var string
+     */
+    private string $selfAlias = 'DataRecordFactory';
 
     /**
      * Factory constructor.
+     * Data Record config. Record name in key an callable to get configuration in value
      * @param array<string, callable> $recordsConfig [
      *      'objectName' => function(): array{ return $objectConfig},
      *       ...
      * ]
+     * Export list. Export alias in name and class in value
      * @param array<string|string>|null $customExports [
      *      'exportAlias' => ExportInterface CustomExport::class,
      *      ...
      * ]
+     * Custom data types list. Type alias in key and class in value.
      * @param array<string|string>|null $customTypes [
      *      'typeAlias' => DataTypeInterface TypeClass::class,
      *       ...
      * ]
+     * Custom object factories. Alias in key and class or object in value.
+     * @param array<string|string>|null $customFactories [
+     *      'typeAlias' => DataTypeInterface TypeClass::class,
+     *       ...
+     * ]
      */
-    public function __construct(array $recordsConfig, ?array $customExports = null, ?array $customTypes = null)
-    {
+    public function __construct(
+        array $recordsConfig,
+        ?array $customExports = null,
+        ?array $customTypes = null,
+        ?array $customFactories = null
+    ) {
         // Register STD data types
         $stdType = DataType::ALIASES;
         foreach ($stdType as $alias => $class) {
@@ -92,6 +113,16 @@ class Factory
         if ($customExports !== null) {
             foreach ($customExports as $alias => $class) {
                 $this->registerExport($alias, $class);
+            }
+        }
+
+        // self registration
+        $this->registerFactory($this->selfAlias, $this);
+
+        // register custom factories
+        if ($customFactories !== null) {
+            foreach ($customFactories as $alias => $class) {
+                $this->registerFactory($alias, $class);
             }
         }
     }
@@ -123,6 +154,16 @@ class Factory
     public function registerExport(string $alias, string $className): void
     {
         $this->registeredExports[$alias] = $className;
+    }
+
+    /**
+     * Register custom factory for complex data types
+     * @param string $alias
+     * @param string|object $factory
+     */
+    public function registerFactory(string $alias, $factory): void
+    {
+        $this->registeredFactories[$alias] = $factory;
     }
 
     /**
@@ -165,14 +206,26 @@ class Factory
 
         foreach ($config['fields'] as $fieldName => &$fieldConfig) {
             if (!isset($fieldConfig['type'])) {
-                throw new RuntimeException('Undefined field  type  for Record :' . $recordName . ',  field:' . $fieldName);
+                throw new RuntimeException(
+                    'Undefined field  type  for Record :' . $recordName . ',  field:' . $fieldName
+                );
             }
             // inject type
             $fieldConfig['type'] = $this->getType($fieldConfig['type']);
 
             // inject validator
-            if(isset($fieldConfig['validator'])){
+            if (isset($fieldConfig['validator'])) {
                 $fieldConfig['validator'] = $this->getValidator($fieldConfig['validator']);
+            }
+
+            // register default factory for RecordType
+            if ($fieldConfig['type'] instanceof RecordType && (!isset($fieldConfig['factory']) || empty($fieldConfig['factory']))) {
+                $fieldConfig['factory'] = $this->selfAlias;
+            }
+
+            // inject factory
+            if (isset($fieldConfig['factory']) && !empty($fieldConfig['factory'])) {
+                $fieldConfig['factory'] = $this->getFactory($fieldConfig['factory']);
             }
         }
         unset($fieldConfig);
@@ -214,23 +267,42 @@ class Factory
      * @return object
      * @throws InvalidArgumentException
      */
-    public function getValidator(string $alias) : object
+    public function getValidator(string $alias): object
     {
-        if(!isset($this->registeredValidators[$alias])){
+        if (!isset($this->registeredValidators[$alias])) {
             $this->registeredValidators[$alias] = $alias;
         }
 
-        if(is_string($this->registeredValidators[$alias])){
+        if (is_string($this->registeredValidators[$alias])) {
             /**
              * @var Object $validator
              */
             $validator = new $alias;
-            if(!method_exists($validator, 'validate')){
-                throw new InvalidArgumentException('Invalid validator class '.$alias.' should implement validate($value) method');
+            if (!method_exists($validator, 'validate')) {
+                throw new InvalidArgumentException(
+                    'Invalid validator class ' . $alias . ' should implement validate($value) method'
+                );
             }
             $this->registeredValidators[$alias] = $validator;
         }
         return $this->registeredValidators[$alias];
+    }
+
+    /**
+     * @param string $name
+     * @return Object
+     */
+    public function getFactory(string $name): object
+    {
+        if (!isset($this->registeredFactories[$name])) {
+            throw new InvalidArgumentException('Undefined Data Factory  ' . $name);
+        }
+
+        if (is_string($this->registeredFactories[$name])) {
+            $this->registeredFactories[$name] = new $this->registeredFactories[$name]();
+        }
+
+        return $this->registeredFactories[$name];
     }
 
     /**
@@ -242,7 +314,7 @@ class Factory
         if (!isset($this->registeredExports[$name])) {
             throw new InvalidArgumentException('Undefined Data Export  ' . $name);
         }
-        if(is_string($this->registeredExports[$name])){
+        if (is_string($this->registeredExports[$name])) {
             $this->registeredExports[$name] = new $this->registeredExports[$name]();
         }
         return $this->registeredExports[$name];

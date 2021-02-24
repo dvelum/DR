@@ -36,7 +36,7 @@ final class DateTimeType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function validateType($value): bool
+    public function validateType(array $fieldConfig, $value): bool
     {
         if (!is_string($value) && (!$value instanceof \DateTime)) {
             return false;
@@ -47,7 +47,7 @@ final class DateTimeType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function applyType($value)
+    public function applyType(array $fieldConfig, $value)
     {
         if (is_string($value)) {
             $value = new \DateTime($value);

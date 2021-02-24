@@ -55,7 +55,7 @@ final class StringType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function applyType($value)
+    public function applyType(array $fieldConfig, $value)
     {
         return $value = (string)$value;
     }
@@ -63,7 +63,7 @@ final class StringType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function validateType($value): bool
+    public function validateType(array $fieldConfig, $value): bool
     {
         if (is_array($value)) {
             return false;

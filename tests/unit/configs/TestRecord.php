@@ -14,7 +14,8 @@ return [
             'type' => 'bool'
         ],
         'string_field' => [
-            'type' => 'string'
+            'type' => 'string',
+            'encoding'=>'utf-8'
         ],
         'string_field_date' => [
             'type' => 'string',
@@ -37,6 +38,11 @@ return [
         ],
         'int_field_limit'=>[
             'type' => 'int',
+            'minValue'=>1,
+            'maxValue' =>10
+        ],
+        'float_field_limit'=>[
+            'type' => 'float',
             'minValue'=>1,
             'maxValue' =>10
         ],

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * DVelum DR library https://github.com/dvelum/dr
  *
@@ -25,44 +24,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-declare(strict_types=1);
 
-namespace Dvelum\DR\Type;
+namespace Dvelum\DR\UnitTest;
 
-final class FloatType implements TypeInterface
+use Dvelum\DR\Config;
+use Dvelum\DR\Factory;
+use Dvelum\DR\Record;
+
+class RecordFactory
 {
-    /**
-     * @inheritDoc
-     */
-    public function validateValue(array $fieldConfig, $value): bool
-    {
-        if (isset($fieldConfig['minValue']) && $value < $fieldConfig['minValue']) {
-            return false;
-        }
+    private Factory $factory;
 
-        if (isset($fieldConfig['maxValue']) && $value > $fieldConfig['maxValue']) {
-            return false;
+    public function getFactory(): Factory
+    {
+        if (!isset($this->factory)) {
+            $this->factory = new Factory(
+                [
+                    'TestRecord' => function () {
+                        return include __DIR__ . '/configs/TestRecord.php';
+                    },
+                    'LibraryRecord' => function () {
+                        return include __DIR__ . '/configs/LibraryRecord.php';
+                    },
+                    'UserRecord' => function () {
+                        return include __DIR__ . '/configs/UserRecord.php';
+                    },
+                ]
+            );
         }
-        return true;
+        return $this->factory;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function applyType(array $fieldConfig, $value)
+    public function createConfig(): Config
     {
-        return $value = (float)$value;
+        return $this->getFactory()->getRecordConfig('TestRecord');
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function validateType(array $fieldConfig, $value): bool
+    public function createRecord(): Record
     {
-        if (!is_numeric($value)) {
-            return false;
-        }
-        return true;
+        return $this->getFactory()->create('TestRecord');
+    }
+
+    public function createNamedRecord(string $name): Record
+    {
+        return $this->getFactory()->create($name);
     }
 }
-

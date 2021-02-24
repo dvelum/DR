@@ -27,59 +27,22 @@
 
 namespace Dvelum\DR\UnitTest;
 
+use Dvelum\DR\Config;
 use Dvelum\DR\Factory;
 use Dvelum\DR\Record;
-use Dvelum\DR\Config;
 use Dvelum\DR\ValidationResult;
 use PHPUnit\Framework\TestCase;
 
 class RecordTest extends TestCase
 {
-    private Factory $factory;
-
-    private function getFactory() : Factory
+    private function createRecord(): Record
     {
-        if(!isset($this->factory)){
-            $this->factory = new Factory([
-                'TestRecord' => function(){ return include __DIR__.'/configs/TestRecord.php';}
-                ]
-            );
-        }
-        return $this->factory;
+        return (new RecordFactory())->getFactory()->create('TestRecord');
     }
 
     private function createConfig(): Config
     {
-        return $this->getFactory()->getRecordConfig('TestRecord');
-    }
-
-    private function createRecord(): Record
-    {
-        return $this->getFactory()->create('TestRecord');
-    }
-
-    public function testNumeric()
-    {
-
-        $record = $this->createRecord();
-        $record->set('int_field', 12);
-        $this->assertEquals(12, $record->get('int_field'));
-
-        $record->set('int_field', '120');
-        $this->assertEquals(120, $record->get('int_field'));
-
-        $record->set('float_field', 129.12);
-        $this->assertEquals(129.12, $record->get('float_field'));
-
-        $record->set('float_field', '120.01');
-        $this->assertEquals(120.01, $record->get('float_field'));
-
-        try {
-            $record->set('float_field', 'sometext');
-        } catch (\InvalidArgumentException $e) {
-            return;
-        }
-        $this->fail('Incorrect type validation exception expected');
+        return (new RecordFactory())->getFactory()->getRecordConfig('TestRecord');
     }
 
     public function testWrongField()
@@ -89,81 +52,6 @@ class RecordTest extends TestCase
         $record->set('undefinedField', 123);
     }
 
-    public function testNumericLimitMax()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('int_field_limit', 100);
-    }
-
-    public function testNumericLimitMin()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('int_field_limit', -100);
-    }
-
-    public function testStringLimit()
-    {
-        $record = $this->createRecord();
-        $record->set('string_field_limit', 'abcd');
-        $this->assertEquals('abcd', $record->get('string_field_limit'));
-    }
-
-    public function testStringLimitMax()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('string_field_limit', 'abcdefg');
-    }
-
-    public function testStringLimitMin()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('string_field_limit', 'ab');
-    }
-
-    public function testString()
-    {
-        $record = $this->createRecord();
-        $record->set('string_field', 'abcdefg');
-        $this->assertEquals('abcdefg', $record->get('string_field'));
-        $record->set('string_field', 123);
-        $this->assertEquals('123', $record->get('string_field'));
-    }
-
-    public function testDefaulDate()
-    {
-        $record = $this->createRecord();
-        $date = date('Y-m-d H:i:s');
-        $this->assertEquals($date, $record->get('string_field_date'));
-    }
-
-    public function testJson()
-    {
-        $record = $this->createRecord();
-        $record->set('json_field', json_encode(['a' => 1, 'b' => 2]));
-        $this->assertEquals(['a' => 1, 'b' => 2], $record->get('json_field'));
-
-        $record->set('json_field', ['a' => 1, 'b' => 2]);
-        $this->assertEquals(['a' => 1, 'b' => 2], $record->get('json_field'));
-    }
-
-    public function testJsonExceptionString()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('json_field', json_encode('abs'));
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('json_field', json_encode(123));
-    }
-    public function testJsonExceptionNum()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('json_field', json_encode(123));
-    }
 
     public function testSetData()
     {
@@ -232,62 +120,6 @@ class RecordTest extends TestCase
         $this->assertTrue(isset($result->getErrors()['string_field_email']));
     }
 
-    public function testDateTimeDefault()
-    {
-        $record = $this->createRecord();
-        $value =  $record->get('datetime_default');
-        $this->assertInstanceOf(\DateTime::class, $value);
-        $this->assertEquals(new \DateTime('2021-01-01 00:00:00'), $value);
-    }
-
-    public function testDateTimeMinString()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('datetime_min', '2020-12-31');
-       // 2021-01-01
-    }
-
-    public function testDateTimeMinObject()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('datetime_min', new \DateTime('2020-12-31'));
-        // 2021-01-01
-    }
-
-    public function testDateTimeString()
-    {
-        $record = $this->createRecord();
-        $record->set('datetime_min', '2021-01-02');
-        $this->assertEquals(new \DateTime( '2021-01-02'),$record->get('datetime_min'));
-        // 2021-01-01
-    }
-
-    public function testDateTimeObject()
-    {
-        $record = $this->createRecord();
-        $record->set('datetime_min', new \DateTime( '2021-01-02'));
-        $this->assertEquals(new \DateTime( '2021-01-02'),$record->get('datetime_min'));
-        // 2021-01-01
-    }
-
-
-    public function testDateTimeMax()
-    {
-        $record = $this->createRecord();
-        $this->expectException(\InvalidArgumentException::class);
-        $record->set('datetime_max', new \DateTime( '2021-01-01 12:00:01'));
-        // 2021-01-01 12:00:00
-    }
-    public function testDateTimeMaxGood()
-    {
-        $record = $this->createRecord();
-        $record->set('datetime_max', new \DateTime( '2021-01-01 11:59:59'));
-        $this->assertEquals(new \DateTime( '2021-01-01 11:59:59'),$record->get('datetime_max'));
-        // 2021-01-01 12:00:00
-    }
-
     public function testNoUpdates()
     {
         $record = $this->createRecord();
@@ -303,13 +135,6 @@ class RecordTest extends TestCase
         $this->assertTrue(!empty($record->getUpdates()));
     }
 
-    public function testDateType()
-    {
-        $record = $this->createRecord();
-        $record->set('date', '2021-01-01');
-        $this->assertInstanceOf(\DateTime::class, $record->get('date'));
-        $this->assertEquals('2021-01-01', $record->get('date')->format('Y-m-d'));
-    }
 
     public function testBoolType()
     {
@@ -321,4 +146,5 @@ class RecordTest extends TestCase
         $this->assertTrue(is_bool($record->get('bool_field')));
         $this->assertEquals(false, $record->get('bool_field'));
     }
+
 }
