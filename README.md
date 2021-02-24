@@ -39,7 +39,7 @@ $result = $record->get('dateTimeField');
 
 ## Установка
 
-`composer create-project dvelum/dr`
+`composer require dvelum/dr`
 
 ## Упрощенный пример использования
 Структура ClientData в конфигурационном файле client.php:
