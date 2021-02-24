@@ -2,6 +2,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/dvelum/dr.svg?style=flat-square)](https://packagist.org/packages/dvelum/dr)
 [![Build and Test](https://github.com/dvelum/dr/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/dvelum/dr/actions/workflows/build_and_test.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/19085497d8fa41689b0c7da4bb1318be)](https://www.codacy.com/gh/dvelum/DR/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dvelum/DR&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/19085497d8fa41689b0c7da4bb1318be)](https://www.codacy.com/gh/dvelum/DR/dashboard?utm_source=github.com&utm_medium=referral&utm_content=dvelum/DR&utm_campaign=Badge_Coverage)
 
 # Data Record - Инструмент для создания и валидации структур данных
 
