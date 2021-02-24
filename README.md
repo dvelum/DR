@@ -3,7 +3,7 @@
 [![Build and Test](https://github.com/dvelum/dr/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/dvelum/dr/actions/workflows/build_and_test.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/530ae53699f3416d8565282e10bac6ec)](https://www.codacy.com/gh/dvelum/DR/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dvelum/DR&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/530ae53699f3416d8565282e10bac6ec)](https://www.codacy.com/gh/dvelum/DR/dashboard?utm_source=github.com&utm_medium=referral&utm_content=dvelum/DR&utm_campaign=Badge_Coverage)
-# Data Record. Инструмент для создания и валидации структур данных.
+# Data Record - Инструмент для создания и валидации структур данных
 
 Позволяет создавать и валидировать структуры данных, без привязки к БД / ActiveRecord / ORM. 
 
@@ -19,14 +19,14 @@
 [Документация](docs/readme.md)
 
 ## Преимущества
-- не нужно создавать обилие классов под каждый тип, заполнять их полями, геттерами и сеттерами
-- экономит время на разработку, количество кода в рантайме
-- стандартные проверки полей типа minVal, maxVal, maxLength, defaultValue, isNullable делаются одной настройкой в файле конфигурации
-- есть возможность проверить всели ли required поля заполнены
-- есть слежение за состоянием изменения (получить список полей которые изменились)
-- можно создавать свои кастомные типы данных (достаточно просто)
-- использует ленивую загрузку экономит оперативную память
-- автоматичесая конвертация типов, например DateTime 
+* не нужно создавать обилие классов под каждый тип, заполнять их полями, геттерами и сеттерами
+* экономит время на разработку, количество кода в рантайме
+* стандартные проверки полей типа minVal, maxVal, maxLength, defaultValue, isNullable делаются одной настройкой в файле конфигурации
+* есть возможность проверить всели ли required поля заполнены
+* есть слежение за состоянием изменения (получить список полей которые изменились)
+* можно создавать собственные (custom) типы данных (достаточно просто)
+* использует ленивую загрузку, экономит оперативную память
+* автоматическая конвертация типов, например DateTime 
 
 ```php 
 $record->set('dateTimeField', '2021-01-01 00:00:00');
@@ -36,11 +36,9 @@ $record->set('dateTimeField', '2021-01-01 00:00:00');
 $result = $record->get('dateTimeField');
 ```
 
-
 ## Установка
 
 `composer create-project dvelum/dr`
-
 
 ## Упрощенный пример использования
 Структура ClientData в конфигурационном файле client.php:
