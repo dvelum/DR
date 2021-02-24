@@ -57,7 +57,7 @@ class User
 <?php
 class UserFactory
 {
-    public funciton createUser(array $data):User
+    public function createUser(array $data):User
     {
       $user = new User();
       $user->setName($data['name']);
@@ -75,6 +75,7 @@ class UserFactory
 
 use Dvelum\DR\Factory;
 use Dvelum\DR\Record;
+use Dvelum\DR\Type\TypeInterface;
 
 final class UserType implements TypeInterface
 {
@@ -137,8 +138,8 @@ $recordRegistry = [
      return [
         'fields' => [
            'date' => ['type'=>'datetime', 'required'=>true],
-           // наше сложное поле
-		   'planner' =>[
+              // наше сложное поле
+              'planner' =>[
               'type' => UserType::class, // можно писать имя класса или имя алиаса 'UserTypeAlias'
               'required' => true,
                // алиас для нашей фабрики пользователей, любая строка
