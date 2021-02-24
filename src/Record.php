@@ -114,7 +114,6 @@ class Record
             }
         }
 
-
         if (!$field->validate($value)) {
             throw new InvalidArgumentException('Invalid value for field: ' . $fieldName);
         }

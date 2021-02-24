@@ -86,7 +86,6 @@ final class DateType implements TypeInterface
                 return false;
             }
         }
-
         return true;
     }
 }
