@@ -42,42 +42,38 @@ $result = $record->get('dateTimeField');
 `composer require dvelum/dr`
 
 ## Упрощенный пример использования
-Структура ClientData в конфигурационном файле client.php:
+
+Файл настроек реестра Records registry.php
 ```php
 <?php
 use Dvelum\DR\Type\StringType;
 use Dvelum\DR\Type\DateTimeType;
 use Dvelum\DR\Record\DefaultValue\CurrentDateTimeString;
-return [
-    'fields' => [
-        'firstName' => [
-            'type' => 'string', // можно StringType::class
-            'minLength' => 2,
-            'required' => true,
-        ],
-        'age' => [
-            'type' => 'int',
-            'minValue' => 18,
-            'default' => 18,
-        ],
-        'date' => [
-            'type' => DateTimeType::class,
-            'minValue' => '2021-01-01',
-            'defaultValueAdapter' => CurrentDateTimeString::class
+$registry =  [
+   'records'=> [
+        'ClientData' => [
+            'fields' => [
+                'firstName' => [
+                    'type' => 'string', // можно StringType::class
+                    'minLength' => 2,
+                    'required' => true,
+                ],
+                'age' => [
+                    'type' => 'int',
+                    'minValue' => 18,
+                    'default' => 18,
+                ],
+                'date' => [
+                    'type' => DateTimeType::class,
+                    'minValue' => '2021-01-01',
+                    'defaultValueAdapter' => CurrentDateTimeString::class
+                ]
+            ]
         ]
+    ]
 ];
 ```
-
-Реестр Records в конфигурационном файле registry.php:
-
-```php
-<?php
-return [
-	// в значении - callable (может быть ваш класс), возвращает массив конфигурации, 
-	// используется ленивая загрузка
-    'ClientData' => function(){ return include 'client.php';}
-];
-```
+[Подробный пример настроек](docs/registry_example.md)
 
 Использование: 
 
@@ -87,11 +83,10 @@ use Dvelum\DR\Factory;
 
 // получаем данные POST из запроса
 $params = $psr7Request->getParsedBody();
-
-// получаем настройки структур
+// получаем настройки реестра
 $registry = include 'registry.php'
 // создаем фабрику DR
-$factory = new Factory($registry /*,[реестр экспортов], [реестр кастомных типов]*/);
+$factory =  Factory::fromArray($registry);
 
 //=== Пример 1 ================================
 $record = $factory->create('ClientData');
@@ -138,7 +133,7 @@ $data = $export->exportRecord($record);
 // или получить только обновления
 $data = $export->exportUpdates($record);
 
-// Export можно получить и из объекта $factory, тогда его нужно будет зарегистрировать при создании $factory
+// Export можно получить и из объекта $factory->getExport('ExportAlias'), тогда его нужно будет зарегистрировать при создании $factory
 // и получить командой:
 /**
  * @var ExportInterface $export

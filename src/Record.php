@@ -83,6 +83,22 @@ class Record
     }
 
     /**
+     * @todo need to be realized
+     */
+    /*
+     *  Reset record data, set values from array without validation.
+     *  Can be used when data is obtained from a trusted source
+     *  to get highest performance. No need in CommitChanges.
+     *  Lazy validation on get value
+     * @param array<string,mixed> $data
+     * @return void
+    public function setRawData(array $data) : void
+    {
+        $this->rawData = $data;
+    }
+    */
+
+    /**
      * @param string $fieldName
      * @param mixed $value
      * @throws InvalidArgumentException

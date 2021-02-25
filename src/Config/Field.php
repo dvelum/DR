@@ -54,6 +54,15 @@ class Field
     }
 
     /**
+     * Get field configuration array
+     * @return array
+     */
+    public function getConfigData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * Get field configuration
      * @return array<string,mixed>
      */
@@ -143,5 +152,14 @@ class Field
             }
         }
         return $this->getType()->validateValue($this->data, $value);
+    }
+
+    /**
+     *  Get field label (description for user)
+     * @return string|null
+     */
+    public function getLabel(): ?string
+    {
+        return $this->data['label'] ?? null;
     }
 }

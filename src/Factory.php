@@ -64,6 +64,18 @@ class Factory
      */
     private string $selfAlias = 'DataRecordFactory';
 
+    public static function fromArray(array $registry): self
+    {
+        $records = $registry['records']??null;
+        if($records === null){
+            throw new InvalidArgumentException('No records in registry');
+        }
+        $exports = $registry['exports']??null;
+        $types =$registry['types']??null;
+        $factories = $registry['factories']??null;
+
+       return new self($records, $exports, $types, $factories);
+    }
     /**
      * Factory constructor.
      * Data Record config. Record name in key an callable to get configuration in value
