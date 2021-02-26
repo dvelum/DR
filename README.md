@@ -37,6 +37,7 @@ $record->set('dateTimeField', '2021-01-01 00:00:00');
 $result = $record->get('dateTimeField');
 ```
 
+
 ## Установка
 
 `composer require dvelum/dr`
@@ -139,6 +140,13 @@ $data = $export->exportUpdates($record);
  * @var ExportInterface $export
  */
 $export = $factory->getExport('Database');
+```
 
+Отсутствие подсветки полей в IDE можно компенсировать UI пакетом [dvelum\dr-ui](https://github.com/dvelum/DR-ui)
+Экспериментальный пакет, позволяет просматривать ваши структуры данных.
+Пока доступен только просмотр, возможно будет добавлено и редактирование.
+Запускается одной командой на локальном хосте linux/macos
 
+![](docs/screen2.png)
+![](docs/screen1.png)
 
