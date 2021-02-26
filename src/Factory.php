@@ -66,9 +66,9 @@ class Factory
 
     /**
      * @param array <string,array>$registry
-     * @return static
+     * @return Factory
      */
-    public static function fromArray(array $registry): self
+    public static function fromArray(array $registry): Factory
     {
         $records = $registry['records']??null;
         if($records === null){

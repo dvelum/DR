@@ -38,6 +38,9 @@ class Config
      * @var Field[] $fields
      */
     private array $fields = [];
+    /**
+     * @var array<string, mixed>
+     */
     private array $config = [];
 
     /**
