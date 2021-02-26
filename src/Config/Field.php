@@ -35,7 +35,7 @@ use InvalidArgumentException;
 class Field
 {
     /**
-     * @var array<string,array> $data
+     * @var array<string,mixed> $data
      */
     private array $data;
     private string $name;
@@ -160,6 +160,9 @@ class Field
      */
     public function getLabel(): ?string
     {
-        return $this->data['label'] ?? null;
+        if(isset($this->data['label'])){
+            return $this->data['label'];
+        }
+        return  null;
     }
 }
