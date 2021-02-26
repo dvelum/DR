@@ -10,17 +10,21 @@
 <?php
 use Dvelum\DR\Factory;
 use  Dvelum\DR\Export\Database;
-// регистрируем наш тип
-$customTypes = [
-    'MyType' => MyType::class
-];
 
-// подключаем экспорт
-$exportRgistry = [
-    'Database' => Database::class
+$registry = [
+    // массив настроек Data Record,
+    'records' => $myRecordsRegistryArray, 
+    // массив пользовательских типов
+    'types' => [
+         // регистрируем наш тип
+         'MyType' => MyType::class
+    ],
+    // список адаптеров экспорта (если нужно, своих или стандартных)
+    'exports' => [
+        'Database' => Database::class
+    ]
 ];
-
-$factory = Factory($recordRegistry, $exportRegistry, $customTypes);
+$factory = Factory::fromArray($registry);
 ```
 
 
@@ -132,6 +136,7 @@ final class UserType implements TypeInterface
 
 ```php
 <?php
+use Dvelum\DR\Factory;
 // регистрируем Data Record, который содержит наш тип
 $recordRegistry = [
   'Event' => static function(){
@@ -156,13 +161,24 @@ $typeRegistry = [
 ];
 // регистрируем пользовательсую фабрику объектов
 $factoryRegistry =[
-  'UserFactoryAlias' => UserFactory::class
+  'UserFactoryAlias' => UserFactory::class,
   // или
   'UserFactoryAlias' => new UserFactory()
 ];
 
+$registry = [
+    // массив настроек Data Record,
+    'records' => $recordRegistry, 
+    // массив пользовательских типов
+    'types' => $typeRegistry,
+    // список адаптеров экспорта (если нужно, своих или стандартных)
+    'exports' => null,
+    'factories' => $factoryRegistry
+    
+];
+
 // инстанцируем фабрику Data Record
-$factory = new \Dvelum\DR\Factory($recordRegistry, null, $typeRegistry, $factoryRegistry);
+$factory =  Factory::fromArray($registry);
 
 // начинаем использовать
 
