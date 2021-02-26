@@ -242,6 +242,38 @@ class Factory
     }
 
     /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredTypes(): array
+    {
+        return $this->registeredTypes;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredFactories(): array
+    {
+        return $this->registeredFactories;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredValidators(): array
+    {
+        return $this->registeredValidators;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredExports(): array
+    {
+        return $this->registeredExports;
+    }
+
+    /**
      * Get type Object
      * @param string $typeAlias
      * @return TypeInterface

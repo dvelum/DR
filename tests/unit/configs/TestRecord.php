@@ -80,6 +80,7 @@ return [
             'default' => null
         ],
         'list_string' => [
+            'label' => 'List field',
             'type' => 'list',
             'values' => ['key1' => 'Key 1','key2' =>'Key 2','3' => 'Key3']
         ],
