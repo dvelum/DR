@@ -37,22 +37,26 @@ class FactoryTest extends TestCase
 {
     private function createFactory(): Factory
     {
-        return new Factory(
+        return Factory::fromArray(
             [
-                'TestRecord' => function (): array {
-                    return [
-                        'fields' => [
-                            'field1' => ['type' => 'int'],
-                            'field2' => ['type' => StringType::class],
-                            'field3' => ['type' => StringType::class,'validator'=>Validator::class],
-                        ]
-                    ];
-                }
-            ],
-            [
-                'Database' => Database::class
+                'records' =>
+                    [
+                        'TestRecord' => function (): array {
+                            return [
+                                'fields' => [
+                                    'field1' => ['type' => 'int'],
+                                    'field2' => ['type' => StringType::class],
+                                    'field3' => ['type' => StringType::class, 'validator' => Validator::class],
+                                ]
+                            ];
+                        }
+                    ],
+                'exports' =>
+                    [
+                        'Database' => Database::class
+                    ]
             ]
-         );
+        );
     }
 
     public function testFactory()

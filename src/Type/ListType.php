@@ -1,5 +1,4 @@
 <?php
-
 /*
  * DVelum DR library https://github.com/dvelum/dr
  *
@@ -29,17 +28,24 @@ declare(strict_types=1);
 
 namespace Dvelum\DR\Type;
 
-use InvalidArgumentException;
-
-final class DateTimeType implements TypeInterface
+final class ListType implements TypeInterface
 {
     /**
      * @inheritDoc
      */
-    public function validateType(array $fieldConfig, $value): bool
+    public function validateValue(array $fieldConfig, $value): bool
     {
-        if (!is_string($value) && (!$value instanceof \DateTime)) {
-            return false;
+        $isMultiple = $fieldConfig['multiple'] ?? false;
+        if($isMultiple){
+            foreach ($value as $v){
+                if(!isset($fieldConfig['values'][$v])){
+                    return  false;
+                }
+            }
+        }else{
+            if(!isset($fieldConfig['values'][$value])){
+                return false;
+            }
         }
         return true;
     }
@@ -49,14 +55,12 @@ final class DateTimeType implements TypeInterface
      */
     public function applyType(array $fieldConfig, $value)
     {
-        if (is_string($value)) {
-            $value = new \DateTime($value);
-        }
-
-        if (!$value instanceof \DateTime) {
-            throw  new InvalidArgumentException(
-                'Invalid value for datetime. Accepts:\DateTime or date string'
-            );
+        $isMultiple = $fieldConfig['multiple'] ?? false;
+        if($isMultiple){
+            if(!is_array($value)){
+                return [$value];
+            }
+            return array_values($value);
         }
         return $value;
     }
@@ -64,37 +68,17 @@ final class DateTimeType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function validateValue(array $fieldConfig, $value): bool
+    public function validateType(array $fieldConfig, $value): bool
     {
-        /**
-         * @var \DateTime $value
-         */
-        if (!$value instanceof \DateTime) {
+        $isMultiple = $fieldConfig['multiple'] ?? false;
+
+        if(!$isMultiple && is_array($value)){
             return false;
         }
 
-        if (isset($fieldConfig['minValue'])) {
-            if (is_string($fieldConfig['minValue'])) {
-                $min = new \DateTime($fieldConfig['minValue']);
-            } else {
-                $min = $fieldConfig['minValue'];
-            }
-            if ($min > $value) {
-                return false;
-            }
+        if (!is_numeric($value) && !is_string($value) && !is_array($value)) {
+            return false;
         }
-
-        if (isset($fieldConfig['maxValue'])) {
-            if (is_string($fieldConfig['maxValue'])) {
-                $max = new \DateTime($fieldConfig['maxValue']);
-            } else {
-                $max = $fieldConfig['maxValue'];
-            }
-            if ($max < $value) {
-                return false;
-            }
-        }
-
         return true;
     }
 }
