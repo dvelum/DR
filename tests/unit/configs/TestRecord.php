@@ -79,6 +79,19 @@ return [
             'type' => 'date',
             'default' => null
         ],
-
+        'list_string' => [
+            'label' => 'List field',
+            'type' => 'list',
+            'values' => ['key1' => 'Key 1','key2' =>'Key 2','3' => 'Key3']
+        ],
+        'list_multiple' => [
+            'type' => 'list',
+            'values' => ['key1' => 'Key 1','key2' =>'Key 2', 'key3'=>'3'],
+            'multiple' => true
+        ],
+        'list_num' => [
+            'type' => 'list',
+            'values' => [0 => 'Key0', 1=>'key 1']
+        ]
     ]
 ];

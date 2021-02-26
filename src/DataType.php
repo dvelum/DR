@@ -34,6 +34,7 @@ use Dvelum\DR\Type\EnumType;
 use Dvelum\DR\Type\FloatType;
 use Dvelum\DR\Type\IntType;
 use Dvelum\DR\Type\JsonType;
+use Dvelum\DR\Type\ListType;
 use Dvelum\DR\Type\RecordType;
 use Dvelum\DR\Type\StringType;
 
@@ -49,6 +50,7 @@ class DataType
     public const JSON_TYPE =  JsonType::class;
     public const RECORD_TYPE = RecordType::class;
     public const ENUM_TYPE = EnumType::class;
+    public const LIST_TYPE = ListType::class;
 
     public const ALIASES = [
         'string' => self::STRING_TYPE,
@@ -59,6 +61,7 @@ class DataType
         'bool' => self::BOOL_TYPE,
         'json' => self::JSON_TYPE,
         'record' => self::RECORD_TYPE,
-        'enum' => self::ENUM_TYPE
+        'enum' => self::ENUM_TYPE,
+        'list' => self::LIST_TYPE
     ];
 }

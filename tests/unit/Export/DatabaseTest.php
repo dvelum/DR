@@ -36,7 +36,7 @@ class DatabaseTest extends TestCase
     private function getFactory(): Factory
     {
         if (!isset($this->factory)) {
-            $this->factory = new Factory(
+            $this->factory =  Factory::fromRecordsArray(
                 [
                     'TestRecord' => function () {
                         return include __DIR__ . '/../configs/TestRecord.php';

@@ -25,13 +25,11 @@
  * SOFTWARE.
  */
 
-namespace Dvelum\DR\UnitTest\Field;
-
 use Dvelum\DR\Record;
 use Dvelum\DR\UnitTest\RecordFactory;
 use PHPUnit\Framework\TestCase;
 
-class DateTest extends TestCase
+class ListTest extends TestCase
 {
 
     private function createRecord(): Record
@@ -39,83 +37,65 @@ class DateTest extends TestCase
         return (new RecordFactory())->getFactory()->create('TestRecord');
     }
 
-    public function testDefaulDate()
+    public function testValue()
     {
         $record = $this->createRecord();
-        $date = date('Y-m-d H:i:s');
-        $this->assertEquals($date, $record->get('string_field_date'));
+        $record->set('list_string', 'key1');
+        $this->assertEquals('key1', $record->get('list_string'));
     }
 
-    public function testDateTimeDefault()
+    public function testArrayValue()
     {
         $record = $this->createRecord();
-        $value = $record->get('datetime_default');
-        $this->assertInstanceOf(\DateTime::class, $value);
-        $this->assertEquals(new \DateTime('2021-01-01 00:00:00'), $value);
+        $record->set('list_multiple', ['key1','key2']);
+        $this->assertEquals(['key1','key2'], $record->get('list_multiple'));
+    }
+    public function testArray2Value()
+    {
+        $record = $this->createRecord();
+        $record->set('list_multiple', 'key1');
+        $this->assertEquals(['key1'], $record->get('list_multiple'));
     }
 
-    public function testDateTimeMinString()
+    public function testFailTypeValue()
     {
         $record = $this->createRecord();
         $this->expectException(\InvalidArgumentException::class);
-        $record->set('datetime_min', '2020-12-31');
-        // 2021-01-01
+        $record->set('list_string', ['key1','key2']);
     }
-
-    public function testDateTimeMinDObject()
+    public function testFailMTypeValue()
     {
         $record = $this->createRecord();
         $this->expectException(\InvalidArgumentException::class);
-        $record->set('date', 1);
-        // 2021-01-01
+        $record->set('list_multiple', ['key1','key7']);
     }
-
-    public function testDateTimeMinObject()
+    public function testFailSTypeValue()
     {
         $record = $this->createRecord();
         $this->expectException(\InvalidArgumentException::class);
-        $record->set('datetime_min', new \DateTime('2020-12-31'));
-        // 2021-01-01
+        $record->set('list_string', 'undefined');
     }
-
-    public function testDateTimeString()
-    {
-        $record = $this->createRecord();
-        $record->set('datetime_min', '2021-01-02');
-        $this->assertEquals(new \DateTime('2021-01-02'), $record->get('datetime_min'));
-        // 2021-01-01
-    }
-
-    public function testDateTimeObject()
-    {
-        $record = $this->createRecord();
-        $record->set('datetime_min', new \DateTime('2021-01-02'));
-        $this->assertEquals(new \DateTime('2021-01-02'), $record->get('datetime_min'));
-        // 2021-01-01
-    }
-
-    public function testDateTimeMax()
+    public function testFailOTypeValue()
     {
         $record = $this->createRecord();
         $this->expectException(\InvalidArgumentException::class);
-        $record->set('datetime_max', new \DateTime('2021-01-01 12:00:01'));
-        // 2021-01-01 12:00:00
+        $record->set('list_string', new \stdClass());
     }
-
-    public function testDateTimeMaxGood()
+    public function testIntValue()
     {
         $record = $this->createRecord();
-        $record->set('datetime_max', new \DateTime('2021-01-01 11:59:59'));
-        $this->assertEquals(new \DateTime('2021-01-01 11:59:59'), $record->get('datetime_max'));
-        // 2021-01-01 12:00:00
+        $record->set('list_num','1');
+        $this->assertEquals(1 , $record->get('list_num'));
     }
 
-    public function testDateType()
+    public function testIntKey()
     {
         $record = $this->createRecord();
-        $record->set('date', '2021-01-01');
-        $this->assertInstanceOf(\DateTime::class, $record->get('date'));
-        $this->assertEquals('2021-01-01', $record->get('date')->format('Y-m-d'));
+        $record->set('list_string', 3);
+        $this->assertEquals('3', $record->get('list_string'));
     }
 }
+
+
+
 

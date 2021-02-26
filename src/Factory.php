@@ -65,83 +65,68 @@ class Factory
     private string $selfAlias = 'DataRecordFactory';
 
     /**
+     *  Create record factory from configuration array
+     * @see https://github.com/dvelum/DR/blob/main/docs/registry_example.md
      * @param array <string,array>$registry
      * @return Factory
      */
     public static function fromArray(array $registry): Factory
     {
-        $records = $registry['records']??null;
-        if($records === null){
+        $records = $registry['records'] ?? null;
+        if ($records === null) {
             throw new InvalidArgumentException('No records in registry');
         }
-        $exports = $registry['exports']??null;
-        $types =$registry['types']??null;
-        $factories = $registry['factories']??null;
+        $factory = new self();
+        // Register user Records
+        foreach ($records as $name => $configLoader) {
+            $factory->registerRecord($name, $configLoader);
+        }
 
-       return new self($records, $exports, $types, $factories);
+        // Register exports
+        $exports = $registry['exports'] ?? null;
+        if ($exports !== null) {
+            foreach ($exports as $alias => $class) {
+                $factory->registerExport($alias, $class);
+            }
+        }
+        $types = $registry['types'] ?? null;
+        // Register user Types
+        if ($types !== null) {
+            foreach ($types as $alias => $class) {
+                $factory->registerDataType($alias, $class);
+            }
+        }
+
+        $factories = $registry['factories'] ?? null;
+        // register custom factories
+        if ($factories !== null) {
+            foreach ($factories as $alias => $class) {
+                $factory->registerFactory($alias, $class);
+            }
+        }
+
+        return $factory;
     }
+
     /**
-     * Factory constructor.
-     * Data Record config. Record name in key an callable to get configuration in value
-     * @param array<string, callable> $recordsConfig [
-     *      'objectName' => function(): array{ return $objectConfig},
-     *       ...
-     * ]
-     * Export list. Export alias in name and class in value
-     * @param array<string|string>|null $customExports [
-     *      'exportAlias' => ExportInterface CustomExport::class,
-     *      ...
-     * ]
-     * Custom data types list. Type alias in key and class in value.
-     * @param array<string|string>|null $customTypes [
-     *      'typeAlias' => DataTypeInterface TypeClass::class,
-     *       ...
-     * ]
-     * Custom object factories. Alias in key and class or object in value.
-     * @param array<string|string>|null $customFactories [
-     *      'typeAlias' => DataTypeInterface TypeClass::class,
-     *       ...
-     * ]
+     * Simple wrapper for fromArray method
+     * @param array<string,mixed> $records
+     * @return Factory
      */
-    public function __construct(
-        array $recordsConfig,
-        ?array $customExports = null,
-        ?array $customTypes = null,
-        ?array $customFactories = null
-    ) {
+    public static function fromRecordsArray(array $records): Factory
+    {
+        return self::fromArray(['records' => $records]);
+    }
+
+    public function __construct()
+    {
         // Register STD data types
         $stdType = DataType::ALIASES;
         foreach ($stdType as $alias => $class) {
             $this->registerDataType($alias, $class);
         }
-
-        // Register user Records
-        foreach ($recordsConfig as $name => $configLoader) {
-            $this->registerRecord($name, $configLoader);
-        }
-
-        // Register user Types
-        if ($customTypes !== null) {
-            foreach ($customTypes as $alias => $class) {
-                $this->registerDataType($alias, $class);
-            }
-        }
-
-        if ($customExports !== null) {
-            foreach ($customExports as $alias => $class) {
-                $this->registerExport($alias, $class);
-            }
-        }
-
         // self registration
         $this->registerFactory($this->selfAlias, $this);
-
-        // register custom factories
-        if ($customFactories !== null) {
-            foreach ($customFactories as $alias => $class) {
-                $this->registerFactory($alias, $class);
-            }
-        }
     }
 
     /**
@@ -235,7 +220,7 @@ class Factory
                 $fieldConfig['validator'] = $this->getValidator($fieldConfig['validator']);
             }
 
-            if($fieldConfig['type'] instanceof EnumType){
+            if ($fieldConfig['type'] instanceof EnumType) {
                 $fieldConfig['values'] = array_flip(array_map('strval', $fieldConfig['values']));
             }
 
@@ -254,6 +239,38 @@ class Factory
         $this->registeredRecords[$recordName] = new Config($config);
 
         return $this->registeredRecords[$recordName];
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredTypes(): array
+    {
+        return $this->registeredTypes;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredFactories(): array
+    {
+        return $this->registeredFactories;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredValidators(): array
+    {
+        return $this->registeredValidators;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRegisteredExports(): array
+    {
+        return $this->registeredExports;
     }
 
     /**
