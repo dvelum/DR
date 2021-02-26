@@ -38,6 +38,7 @@ class Config
      * @var Field[] $fields
      */
     private array $fields = [];
+    private array $config = [];
 
     /**
      * Config constructor.
@@ -48,6 +49,20 @@ class Config
         foreach ($config['fields'] as $name => $data) {
             $this->fields[$name] = new Field($name, $data);
         }
+        unset($config['fields']);
+
+        if (!empty($config)) {
+            $this->config = $config;
+        }
+    }
+
+    /**
+     *  Get Record Title/Description
+     * @return string|null
+     */
+    public function getTitle(): ?string
+    {
+        return $this->config['title'] ?? null;
     }
 
     /**

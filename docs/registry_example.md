@@ -13,6 +13,9 @@ return [
           // для упрощения
           'User' => static function(){
              return [
+               // название / описание / комментарий к объекту, не обязательно
+                'title' => 'Пользователи',
+                // список полей,  обязательно
                 'fields' => [
                    'firstName' => [
                         'type' => 'string', // можно StringType::class

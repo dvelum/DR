@@ -141,6 +141,9 @@ use Dvelum\DR\Factory;
 $recordRegistry = [
   'Event' => static function(){
      return [
+      // название объекта, не обязательное поле
+       'title' => 'Планируемые события',
+       // список полей
         'fields' => [
            'date' => ['type'=>'datetime', 'required'=>true],
               // наше сложное поле

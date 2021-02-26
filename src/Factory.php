@@ -64,6 +64,10 @@ class Factory
      */
     private string $selfAlias = 'DataRecordFactory';
 
+    /**
+     * @param array <string,array>$registry
+     * @return static
+     */
     public static function fromArray(array $registry): self
     {
         $records = $registry['records']??null;

@@ -55,7 +55,7 @@ class Field
 
     /**
      * Get field configuration array
-     * @return array
+     * @return array <string, mixed>
      */
     public function getConfigData(): array
     {
