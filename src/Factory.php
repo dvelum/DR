@@ -110,7 +110,7 @@ class Factory
 
     /**
      * Simple wrapper for fromArray method
-     * @param array $records
+     * @param array<string,mixed> $records
      * @return Factory
      */
     public static function fromRecordsArray(array $records): Factory
