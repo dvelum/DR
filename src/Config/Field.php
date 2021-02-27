@@ -41,6 +41,12 @@ class Field
     private string $name;
     private TypeInterface $type;
 
+    // performance flags
+    /**
+     * @var null|bool
+     */
+    private $hasDefault = null;
+
     /**
      * Field constructor.
      * @param string $name
@@ -104,7 +110,13 @@ class Field
      */
     public function hasDefault(): bool
     {
-        return array_key_exists('default', $this->data) || isset($this->data['defaultValueAdapter']);
+        //performance workaround
+        if($this->hasDefault !== null){
+            return $this->hasDefault;
+        }
+        $this->hasDefault  = array_key_exists('default', $this->data) || isset($this->data['defaultValueAdapter']);
+
+        return $this->hasDefault;
     }
 
     /**
@@ -135,6 +147,16 @@ class Field
     }
 
     /**
+     * Check for user defined validator
+     * @return bool
+     */
+    public function hasValidator():bool
+    {
+        return isset($this->data['validator']);
+    }
+
+    /**
+     * Validate field value by user defined validator
      * @param mixed $value
      * @return bool
      */
@@ -146,12 +168,11 @@ class Field
              */
             $validator = $this->data['validator'];
             if (method_exists($validator, 'validate')) {
-                if (!$validator->validate($value)) {
-                    return false;
-                }
+               return $validator->validate($value);
             }
+            throw new InvalidArgumentException($this->data['validator'] . ' has no validate method');
         }
-        return $this->getType()->validateValue($this->data, $value);
+        return true;
     }
 
     /**

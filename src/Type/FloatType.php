@@ -36,6 +36,11 @@ final class FloatType implements TypeInterface
      */
     public function validateValue(array $fieldConfig, $value): bool
     {
+        // performance patch
+        if(!isset($fieldConfig['minValue']) && !isset($fieldConfig['maxValue'])){
+            return true;
+        }
+
         if (isset($fieldConfig['minValue']) && $value < $fieldConfig['minValue']) {
             return false;
         }
@@ -59,6 +64,11 @@ final class FloatType implements TypeInterface
      */
     public function validateType(array $fieldConfig, $value): bool
     {
+        // performance patch
+        if(is_float($value)){
+            return true;
+        }
+
         if (!is_numeric($value)) {
             return false;
         }
