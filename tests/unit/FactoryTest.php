@@ -37,7 +37,7 @@ class FactoryTest extends TestCase
 {
     private function createFactory(): Factory
     {
-        return Factory::fromArray(
+        return new Factory(
             [
                 'records' =>
                     [

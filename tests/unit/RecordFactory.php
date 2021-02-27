@@ -38,7 +38,8 @@ class RecordFactory
     public function getFactory(): Factory
     {
         if (!isset($this->factory)) {
-            $this->factory =  Factory::fromRecordsArray(
+            $this->factory =  new Factory([
+                'records' =>
                 [
                     'TestRecord' => function () {
                         return include __DIR__ . '/configs/TestRecord.php';
@@ -50,7 +51,7 @@ class RecordFactory
                         return include __DIR__ . '/configs/UserRecord.php';
                     },
                 ]
-            );
+            ]);
         }
         return $this->factory;
     }

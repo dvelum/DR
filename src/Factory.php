@@ -65,61 +65,16 @@ class Factory
     private string $selfAlias = 'DataRecordFactory';
 
     /**
-     *  Create record factory from configuration array
-     * @see https://github.com/dvelum/DR/blob/main/docs/registry_example.md
-     * @param array <string,array>$registry
-     * @return Factory
+     * Factory constructor.
+     * @param array<string,mixed> $registry
      */
-    public static function fromArray(array $registry): Factory
+    public function __construct(array $registry)
     {
         $records = $registry['records'] ?? null;
         if ($records === null) {
             throw new InvalidArgumentException('No records in registry');
         }
-        $factory = new self();
-        // Register user Records
-        foreach ($records as $name => $configLoader) {
-            $factory->registerRecord($name, $configLoader);
-        }
 
-        // Register exports
-        $exports = $registry['exports'] ?? null;
-        if ($exports !== null) {
-            foreach ($exports as $alias => $class) {
-                $factory->registerExport($alias, $class);
-            }
-        }
-        $types = $registry['types'] ?? null;
-        // Register user Types
-        if ($types !== null) {
-            foreach ($types as $alias => $class) {
-                $factory->registerDataType($alias, $class);
-            }
-        }
-
-        $factories = $registry['factories'] ?? null;
-        // register custom factories
-        if ($factories !== null) {
-            foreach ($factories as $alias => $class) {
-                $factory->registerFactory($alias, $class);
-            }
-        }
-
-        return $factory;
-    }
-
-    /**
-     * Simple wrapper for fromArray method
-     * @param array<string,mixed> $records
-     * @return Factory
-     */
-    public static function fromRecordsArray(array $records): Factory
-    {
-        return self::fromArray(['records' => $records]);
-    }
-
-    public function __construct()
-    {
         // Register STD data types
         $stdType = DataType::ALIASES;
         foreach ($stdType as $alias => $class) {
@@ -127,6 +82,34 @@ class Factory
         }
         // self registration
         $this->registerFactory($this->selfAlias, $this);
+
+        // Register user Records
+        foreach ($records as $name => $configLoader) {
+            $this->registerRecord($name, $configLoader);
+        }
+
+        // Register exports
+        $exports = $registry['exports'] ?? null;
+        if ($exports !== null) {
+            foreach ($exports as $alias => $class) {
+                $this->registerExport($alias, $class);
+            }
+        }
+        $types = $registry['types'] ?? null;
+        // Register user Types
+        if ($types !== null) {
+            foreach ($types as $alias => $class) {
+                $this->registerDataType($alias, $class);
+            }
+        }
+
+        $factories = $registry['factories'] ?? null;
+        // register custom factories
+        if ($factories !== null) {
+            foreach ($factories as $alias => $class) {
+                $this->registerFactory($alias, $class);
+            }
+        }
     }
 
     /**

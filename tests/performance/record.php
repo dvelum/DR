@@ -5,7 +5,7 @@ $data = include __DIR__.'/data.php';
 $s = microtime(true);
 $m = memory_get_usage();
 
-$str = [
+$registry = [
     'records' => [
         'user' => static function(){
             return [
@@ -26,7 +26,7 @@ $str = [
         }
     ]
 ];
-$factory = \Dvelum\DR\Factory::fromArray($str);
+$factory = new \Dvelum\DR\Factory($registry);
 $isRaw =$argv[2] ?? false;
 if($isRaw){
     foreach ($data as $k=>$v){

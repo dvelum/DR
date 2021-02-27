@@ -36,7 +36,7 @@ $recordRegistry = [
 ];
 
 // инстанцируем фабрику Data Record
-$factory =  Factory::fromRecordsArray($recordRegistry);
+$factory =  new Factory([ 'records' => $recordRegistry]);
 // начинаем использовать
 $requestData = [
   'date'=>'2021-01-01 00:00:00', 

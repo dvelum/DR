@@ -86,9 +86,9 @@ use Dvelum\DR\Factory;
 // получаем данные POST из запроса
 $params = $psr7Request->getParsedBody();
 // получаем настройки реестра
-$registry = include 'registry.php'
+$registry = include 'registry.php';
 // создаем фабрику DR
-$factory =  Factory::fromArray($registry);
+$factory =  new Factory($registry);
 
 //=== Пример 1 ================================
 $record = $factory->create('ClientData');

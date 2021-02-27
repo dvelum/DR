@@ -24,7 +24,7 @@ $registry = [
         'Database' => Database::class
     ]
 ];
-$factory = Factory::fromArray($registry);
+$factory = new Factory($registry);
 ```
 
 
@@ -181,7 +181,7 @@ $registry = [
 ];
 
 // инстанцируем фабрику Data Record
-$factory =  Factory::fromArray($registry);
+$factory =  new Factory($registry);
 
 // начинаем использовать
 
