@@ -34,7 +34,8 @@ use Dvelum\DR\Record;
 use Dvelum\DR\Type\DateTimeType;
 use Dvelum\DR\Type\DateType;
 use Dvelum\DR\Type\JsonType;
-use \json_encode;
+use \DateTime;
+use function \json_encode;
 
 class Database implements ExportInterface
 {
@@ -73,27 +74,37 @@ class Database implements ExportInterface
         foreach ($fields as $name => $field) {
             if ($field->getType() instanceof JsonType){
                 if (!empty($data[$name])) {
-                    $data[$name] = json_encode($data[$name], JSON_THROW_ON_ERROR);
+                    $val = $data[$name];
+                    if(is_array($val)){
+                        $val = json_encode($data[$name], JSON_THROW_ON_ERROR);
+                    }
+                    $data[$name] = $val;
                 }
             }
 
             if ($field->getType() instanceof DateTimeType) {
                 if (!empty($data[$name])) {
                     /**
-                     * @var \DateTime $date
+                     * @var DateTime $val
                      */
-                    $date = $data[$name];
-                    $data[$name] = $date->format($this->dateTimeFormat);
+                    $val = $data[$name];
+                    if($val instanceof DateTime){
+                        $val = $val->format($this->dateTimeFormat);
+                    }
+                    $data[$name] = $val;
                 }
             }
 
             if ($field->getType() instanceof DateType) {
                 if (!empty($data[$name])) {
                     /**
-                     * @var \DateTime $date
+                     * @var DateTime $val
                      */
-                    $date = $data[$name];
-                    $data[$name] = $date->format($this->dateFormat);
+                    $val = $data[$name];
+                    if($val instanceof DateTime){
+                        $val = $val->format($this->dateFormat);
+                    }
+                    $data[$name] = $val;
                 }
             }
         }

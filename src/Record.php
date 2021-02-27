@@ -29,6 +29,7 @@ declare(strict_types=1);
 
 namespace Dvelum\DR;
 
+use Dvelum\DR\Config\Field;
 use InvalidArgumentException;
 
 class Record
@@ -44,10 +45,17 @@ class Record
     protected array $updates = [];
     private string $name;
 
+    /**
+     * performance cache
+     * @var array<string,Field>
+     */
+    private array $fieldsCache;
+
     public function __construct(string $name, Config $config)
     {
         $this->name = $name;
         $this->config = $config;
+        $this->fieldsCache = $config->getFields();
     }
 
     /**
@@ -83,20 +91,23 @@ class Record
     }
 
     /**
-     * @todo need to be realized
-     */
-    /*
-     *  Reset record data, set values from array without validation.
-     *  Can be used when data is obtained from a trusted source
+     *  Set values from array without validation.
+     *  Use carefully with a full understanding of how it works.
+     *  Types will not be converted and values will be returned as is.
+     *  Can be used when data is obtained from a trusted source and validated format
      *  to get highest performance. No need in CommitChanges.
-     *  Lazy validation on get value
      * @param array<string,mixed> $data
      * @return void
+     */
     public function setRawData(array $data) : void
     {
-        $this->rawData = $data;
+        foreach ($data as $key => $value){
+            if(isset($this->fieldsCache[$key])){
+                $this->data[$key] = $value;
+            }
+        }
+        $this->data = $data;
     }
-    */
 
     /**
      * @param string $fieldName
@@ -105,38 +116,51 @@ class Record
      */
     public function set(string $fieldName, $value): void
     {
-        if (!$this->config->fieldExists($fieldName)) {
+        if (!isset($this->fieldsCache[$fieldName])) {
             throw new InvalidArgumentException('Undefined field: ' . $fieldName);
         }
 
-        $field = $this->config->getField($fieldName);
+        $field = $this->fieldsCache[$fieldName];
         $type  = $field->getType();
 
         if($value === null && !$field->isNullable()){
             throw new InvalidArgumentException('Invalid data type for  field: ' . $fieldName.', can not be null');
         }
 
+        $fieldData = $field->getData();
         // validate not nul values type (any field can be null)
-        if ($value!==null && !$type->validateType($field->getData(), $value)) {
+        if ($value!==null && !$type->validateType($fieldData, $value)) {
             throw new InvalidArgumentException('Invalid data type for  field: ' . $fieldName);
         }
 
         // covert value type into required by configuration
         if($value!==null){
             try{
-                $value = $type->applyType($field->getData(), $value);
+                $value = $type->applyType($fieldData, $value);
             }catch (\Throwable $e){
                 throw new InvalidArgumentException('Invalid value for field '.$fieldName.' '.$e->getMessage());
             }
         }
 
-        if ($value!==null && !$field->validate($value)) {
-            throw new InvalidArgumentException('Invalid value for field: ' . $fieldName);
+        if ($value!==null) {
+            if(!$type->validateValue($fieldData, $value)){
+                throw new InvalidArgumentException('Invalid value for field: ' . $fieldName);
+            }
+            if($field->hasValidator() && !$field->validate($value)){
+                throw new InvalidArgumentException('Invalid value for field: ' . $fieldName);
+            }
         }
 
         // check is it real value update
-        if(!array_key_exists($fieldName, $this->updates) && array_key_exists($fieldName, $this->data) && $this->data[$fieldName]===$value){
-            return;
+        // performance patch
+        if($value !==null){
+            if(!isset($this->updates[$fieldName]) && isset($this->data[$fieldName]) && $this->data[$fieldName]===$value){
+                return;
+            }
+        }else{
+            if(!array_key_exists($fieldName, $this->updates) && array_key_exists($fieldName, $this->data) && $this->data[$fieldName]===$value){
+                return;
+            }
         }
 
         $this->updates[$fieldName] = $value;

@@ -36,6 +36,10 @@ final class StringType implements TypeInterface
      */
     public function validateValue(array $fieldConfig, $value): bool
     {
+        if(!isset($fieldConfig['minLength']) && !isset( $fieldConfig['maxLength'])){
+            return true;
+        }
+
         $encoding = 'utf-8';
         if(isset($fieldConfig['encoding'])){
             $encoding = $fieldConfig['encoding'];
@@ -65,6 +69,11 @@ final class StringType implements TypeInterface
      */
     public function validateType(array $fieldConfig, $value): bool
     {
+        // performance patch
+        if(is_string($value)){
+            return true;
+        }
+
         if (is_array($value)) {
             return false;
         }
